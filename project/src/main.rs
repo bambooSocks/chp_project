@@ -1,8 +1,10 @@
 use std::collections::HashMap;
 mod decoder;
+mod preprocesser;
 mod solver;
 
 use crate::decoder::decoder::decode;
+use crate::preprocesser::preprocesser::preprocess;
 use crate::solver::solver::solve;
 
 #[derive(Debug)]
@@ -14,7 +16,8 @@ pub struct ProblemInstance {
 
 fn main() {
     let instance = decode();
-    let result = solve(&instance);
+    let preprocessed = preprocess(&instance);
+    let result = solve(&preprocessed);
     if result {
         println!("YES")
     }
