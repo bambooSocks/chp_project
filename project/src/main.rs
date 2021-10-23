@@ -1,7 +1,9 @@
 use std::collections::HashMap;
 mod decoder;
+mod solver;
 
 use crate::decoder::decoder::decode;
+use crate::solver::solver::solve;
 
 #[derive(Debug)]
 pub struct ProblemInstance {
@@ -12,5 +14,11 @@ pub struct ProblemInstance {
 
 fn main() {
     let instance = decode();
-    println!("{:?}", instance)
+    let result = solve(&instance);
+    if result {
+        println!("YES")
+    }
+    else {
+        println!("NO")
+    }
 }
