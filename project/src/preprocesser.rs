@@ -2,8 +2,6 @@ pub mod preprocesser {
     
     use crate::ProblemInstance;
 
-    //use itertools::Itertools;
-    //use std::iter::FromIterator;
     use std::collections::HashMap;
 
     pub fn preprocess(p: &ProblemInstance) -> ProblemInstance {
@@ -24,9 +22,29 @@ pub mod preprocesser {
                 expansion.insert(*key, val);
             }
         }
+        
+        //Sort t, such higher amounts of lowercase letters in t_i appears first
+        let mut t: Vec<String> = ((&*(p.t)).to_vec()).clone();
+        for i in 0..t.len() {
+            for j in 0..t.len() - i - 1 {
+                let mut lowercase_characters: String = t[j].clone();
+                lowercase_characters.retain(|l| l.is_lowercase());
+                let mut lowercase_characters_2: String = t[j+1].clone();
+                lowercase_characters_2.retain(|l| l.is_lowercase());
+                if lowercase_characters.len() < lowercase_characters_2.len() {
+                    let temp: String = t[j].clone();
+                    let temp_2: String = t[j+1].clone();
+                    t[j] = temp_2;
+                    t[j+1] = temp;
+                }
+            }
+        }
+        //Would be much easier to do the following, but I cannot get it to work
+        //t.sort_by(|a, b| (b.retain(|l| l.is_lowercase()).collect()).len().cmp((&a.retain(|l| l.is_lowercase()).collect()).len()));
+
         ProblemInstance {
             s: (&*(p.s)).to_string(),
-            t: (&*(p.t)).to_vec(),
+            t: t,
             r: expansion
         }
     }
