@@ -5,7 +5,7 @@ pub mod solver {
     
     use crate::ProblemInstance;
 
-    use itertools::Itertools;
+    /*use itertools::Itertools;
     use std::iter::FromIterator;
     use std::collections::HashMap;
 
@@ -38,7 +38,7 @@ pub mod solver {
             }
         }
         false
-    }
+    }*/
 
     pub fn solve_2(p: &ProblemInstance) -> bool {
         let mut found: bool = false;

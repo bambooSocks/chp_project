@@ -5,7 +5,7 @@ mod solver;
 
 use crate::decoder::decoder::decode;
 use crate::preprocesser::preprocesser::preprocess;
-use crate::solver::solver::solve;
+//use crate::solver::solver::solve;
 use crate::solver::solver::solve_2;
 
 #[derive(Debug)]
