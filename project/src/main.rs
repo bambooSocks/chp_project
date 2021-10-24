@@ -19,10 +19,10 @@ fn main() {
     let instance = decode();
     let preprocessed = preprocess(&instance);
     let result = solve_2(&preprocessed);
-    if result {
-        println!("YES")
+    if result == "NO".to_string() {
+        println!("NO")
     }
     else {
-        println!("NO")
+        println!("{}", result)
     }
 }

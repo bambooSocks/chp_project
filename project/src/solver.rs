@@ -40,10 +40,7 @@ pub mod solver {
         false
     }*/
 
-    pub fn solve_2(p: &ProblemInstance) -> bool {
-        let mut found: bool = false;
-        //let t = &p.t;
-        //println!("{:?}", t);
+    pub fn solve_2(p: &ProblemInstance) -> String {
         let mut keys: Vec<char> = Vec::new();
         let mut values: Vec<Vec<String>> = Vec::new();
         let mut dim_sizes: Vec<usize> = Vec::new();
@@ -59,12 +56,12 @@ pub mod solver {
         //println!("values: {:?}", values);
         //println!("dim_sizes: {:?}", dim_sizes);
         let partial_result: Vec<(char,String)> = Vec::new();
-        found = recurse_combinations(0, dims, dim_sizes, keys, values, partial_result, (&*p.t).to_vec(), (&*p.s).to_string());
-        return found;
+        let ret: String = recurse_combinations(0, dims, dim_sizes, keys, values, partial_result, (&*p.t).to_vec(), (&*p.s).to_string());
+        return ret;
     }
 
-    pub fn recurse_combinations(current_dim: usize, dims: usize, dim_sizes: Vec<usize>, keys: Vec<char>, values: Vec<Vec<String>>, mut partial_result: Vec<(char,String)>, t: Vec<String>, s: String) -> bool {
-        let mut ret: bool = false;
+    pub fn recurse_combinations(current_dim: usize, dims: usize, dim_sizes: Vec<usize>, keys: Vec<char>, values: Vec<Vec<String>>, mut partial_result: Vec<(char,String)>, t: Vec<String>, s: String) -> String {
+        let mut ret = String::new();
         if current_dim >= dims {
             //println!("{:?}", partial_result);
             for ti in t {
@@ -84,10 +81,16 @@ pub mod solver {
                     }
                 }
                 if !s.contains(&substring) {
-                    return false;
+                    return "NO".to_string();
                 }
             }
-            return true;
+            let mut ret_builder = String::new();
+            for pr in &partial_result {
+                ret_builder.push_str(&(format!("{}:{}", pr.0, pr.1)).to_string());
+                ret_builder.push_str("\n");
+            }
+            ret_builder.pop();
+            return ret_builder;
         }
         for i in 0..dim_sizes[current_dim] {
             let mut add: bool = true;
@@ -103,9 +106,8 @@ pub mod solver {
                 let val: String = values[current_dim][i].clone();
                 partial_result.push((keys[current_dim], val));
             }
-
             ret = recurse_combinations(current_dim + 1, dims, (&*dim_sizes).to_vec(), (&*keys).to_vec(), (&*values).to_vec(), (&*partial_result).to_vec(), (&*t).to_vec(), (&*s).to_string());
-            if ret {
+            if ret != "NO".to_string() {
                 break;
             }
         }
