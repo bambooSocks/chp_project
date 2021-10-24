@@ -41,29 +41,31 @@ pub mod solver {
     }*/
 
     pub fn solve_2(p: &ProblemInstance) -> String {
-        let mut keys: Vec<char> = Vec::new();
-        let mut values: Vec<Vec<String>> = Vec::new();
-        let mut dim_sizes: Vec<usize> = Vec::new();
+        //kv_tuple is a triple of dimension size for the expansion, the character of the expansion, and the expansion
+        let mut kv_tuple: Vec<(usize, char, Vec<String>)> = Vec::new();
         for (key, value) in &(p.r) {
-            keys.push(*key);
             let val = &*value.clone();
-            values.push(val.to_vec());
-            dim_sizes.push(value.len());
+            kv_tuple.push((value.len(), *key, val.to_vec()));
         }
-        let dims = keys.len();
-        //println!("dims: {}", dims);
-        //println!("keys: {:?}", keys);
-        //println!("values: {:?}", values);
-        //println!("dim_sizes: {:?}", dim_sizes);
-        let partial_result: Vec<(char,String)> = Vec::new();
-        let ret: String = recurse_combinations(0, dims, dim_sizes, keys, values, partial_result, (&*p.t).to_vec(), (&*p.s).to_string());
+        let dims = kv_tuple.len();
+        let mut partial_result: Vec<(char,String)> = Vec::new();
+        kv_tuple.sort_by(|a, b| (a.1).cmp(&b.1));
+        for kv in &kv_tuple {
+            partial_result.push((kv.1, "-".to_string()));
+        }
+        let ret: String = recurse_combinations(0, dims, kv_tuple, partial_result, (&*p.t).to_vec(), (&*p.s).to_string());
         return ret;
     }
 
-    pub fn recurse_combinations(current_dim: usize, dims: usize, dim_sizes: Vec<usize>, keys: Vec<char>, values: Vec<Vec<String>>, mut partial_result: Vec<(char,String)>, t: Vec<String>, s: String) -> String {
+    pub fn recurse_combinations(current_dim: usize, dims: usize, kv_tuple: Vec<(usize, char, Vec<String>)>, mut partial_result: Vec<(char,String)>, t: Vec<String>, s: String) -> String {
         let mut ret = String::new();
+
+        //If-statement after we've built one possible combination
         if current_dim >= dims {
+            //Below represents one of all the possible combinations
             //println!("{:?}", partial_result);
+
+            //For each t_i, build the represented string and see if it is contained in s
             for ti in t {
                 let mut substring = String::new();
                 for c in ti.chars() {
@@ -84,6 +86,8 @@ pub mod solver {
                     return "NO".to_string();
                 }
             }
+
+            //It was contained, build the string
             let mut ret_builder = String::new();
             for pr in &partial_result {
                 ret_builder.push_str(&(format!("{}:{}", pr.0, pr.1)).to_string());
@@ -92,21 +96,16 @@ pub mod solver {
             ret_builder.pop();
             return ret_builder;
         }
-        for i in 0..dim_sizes[current_dim] {
-            let mut add: bool = true;
-            for j in 0..partial_result.len() {
-                if partial_result[j].0 == keys[current_dim] {
-                    let val: String = values[current_dim][i].clone();
-                    partial_result[j].1 = val;
-                    add = false;
-                    break;
-                }
-            }
-            if add {
-                let val: String = values[current_dim][i].clone();
-                partial_result.push((keys[current_dim], val));
-            }
-            ret = recurse_combinations(current_dim + 1, dims, (&*dim_sizes).to_vec(), (&*keys).to_vec(), (&*values).to_vec(), (&*partial_result).to_vec(), (&*t).to_vec(), (&*s).to_string());
+
+        //Recursive call to build all possible combinations
+        for i in 0..kv_tuple[current_dim].0 {
+            //Update the possible combination with a new update key value
+            partial_result[current_dim].1 = (kv_tuple[current_dim].2)[i].clone();
+
+            //Recurse and update the next expansions of a combination
+            ret = recurse_combinations(current_dim + 1, dims, (&*kv_tuple).to_vec(), (&*partial_result).to_vec(), (&*t).to_vec(), (&*s).to_string());
+            
+            //Premature break in the case a possible combination was found
             if ret != "NO".to_string() {
                 break;
             }

@@ -6,9 +6,28 @@ pub mod preprocesser {
 
     pub fn preprocess(p: &ProblemInstance) -> ProblemInstance {
 
-        //Remove expansion letters (or complete expansions) which do not occur in s
+        //Remove expansion letters (or complete expansions) which do not occur in s or expansions which do not occur in the t_i's
         let mut expansion: HashMap<char, Vec<String>> = HashMap::new();
         for (key, value) in &(p.r) {
+
+            let mut dont_add_kv: bool = true;
+            for ti in &(p.t) {
+                let mut break_outer: bool = false;
+                for c in ti.chars() {
+                    if c == *key {
+                        dont_add_kv = false;
+                        break_outer = true;
+                        break;
+                    }
+                }
+                if break_outer {
+                    break;
+                }
+            }
+            if dont_add_kv {
+                continue;
+            }
+
             let mut val: Vec<String> = Vec::new();
             for letters in &*value {
                 if (&(p.s)).contains(letters) {
