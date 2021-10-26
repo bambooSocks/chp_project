@@ -3,6 +3,7 @@ pub mod preprocesser {
     use crate::ProblemInstance;
 
     use std::collections::HashMap;
+    use std::collections::HashSet;
 
     pub fn preprocess(p: &ProblemInstance) -> ProblemInstance {
 
@@ -66,5 +67,22 @@ pub mod preprocesser {
             t: t,
             r: expansion
         }
+    }
+
+    pub fn generate_possible_substrings(p: &ProblemInstance) -> HashMap<usize, HashSet<String>> {
+        let mut result: HashMap<usize, HashSet<String>> = HashMap::new();
+        // For 1 <= i <= len(s) create a set of all substrings of s of length=i
+        for i in 1..p.s.len()+1 {
+            result.insert(i, create_substrings_of_length(&p.s, i));
+        }
+        result
+    }
+
+    fn create_substrings_of_length(s: &String, length: usize) -> HashSet<String> {
+        let mut result: HashSet<String> = HashSet::new();
+        for i in 0..s.len()-length+1 {
+            result.insert(s[i..i+length].to_owned());
+        }
+        result
     }
 }

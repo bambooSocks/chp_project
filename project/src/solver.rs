@@ -5,6 +5,9 @@ pub mod solver {
     
     use crate::ProblemInstance;
 
+    use std::collections::HashMap;
+    use std::collections::HashSet;
+
     /*use itertools::Itertools;
     use std::iter::FromIterator;
     use std::collections::HashMap;
@@ -40,7 +43,7 @@ pub mod solver {
         false
     }*/
 
-    pub fn solve_2(p: &ProblemInstance) -> String {
+    pub fn solve_2(p: &ProblemInstance, possible_substrings: &HashMap<usize, HashSet<String>>) -> String {
         //kv_tuple is a triple of dimension size for the expansion, the character of the expansion, and the expansion
         let mut kv_tuple: Vec<(usize, char, Vec<String>)> = Vec::new();
         for (key, value) in &(p.r) {
@@ -53,11 +56,13 @@ pub mod solver {
         for kv in &kv_tuple {
             partial_result.push((kv.1, "-".to_string()));
         }
-        let ret: String = recurse_combinations(0, dims, kv_tuple, partial_result, (&*p.t).to_vec(), (&*p.s).to_string());
+        let ret: String = recurse_combinations(0, dims, kv_tuple, partial_result, (&*p.t).to_vec(), (&*p.s).to_string(), possible_substrings);
         return ret;
     }
 
-    pub fn recurse_combinations(current_dim: usize, dims: usize, kv_tuple: Vec<(usize, char, Vec<String>)>, mut partial_result: Vec<(char,String)>, t: Vec<String>, s: String) -> String {
+    pub fn recurse_combinations(current_dim: usize, dims: usize, kv_tuple: Vec<(usize, char, Vec<String>)>, 
+            mut partial_result: Vec<(char,String)>, t: Vec<String>, s: String, 
+            possible_substrings: &HashMap<usize, HashSet<String>>) -> String {
         let mut ret = String::new();
 
         //If-statement after we've built one possible combination
@@ -82,7 +87,7 @@ pub mod solver {
                         }
                     }
                 }
-                if !s.contains(&substring) {
+                if !does_s_contain(&substring, possible_substrings) {
                     return "NO".to_string();
                 }
             }
@@ -103,7 +108,8 @@ pub mod solver {
             partial_result[current_dim].1 = (kv_tuple[current_dim].2)[i].clone();
 
             //Recurse and update the next expansions of a combination
-            ret = recurse_combinations(current_dim + 1, dims, (&*kv_tuple).to_vec(), (&*partial_result).to_vec(), (&*t).to_vec(), (&*s).to_string());
+            ret = recurse_combinations(current_dim + 1, dims, (&*kv_tuple).to_vec(), (&*partial_result).to_vec(), 
+                    (&*t).to_vec(), (&*s).to_string(), possible_substrings);
             
             //Premature break in the case a possible combination was found
             if ret != "NO".to_string() {
@@ -111,5 +117,13 @@ pub mod solver {
             }
         }
         return ret;
+    }
+
+    fn does_s_contain(substring: &String, possible_substrings: &HashMap<usize, HashSet<String>>) -> bool {
+        if !possible_substrings.contains_key(&substring.len()) {
+            return false
+        }
+
+        possible_substrings[&substring.len()].contains(substring)
     }
 }

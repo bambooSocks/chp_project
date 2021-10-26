@@ -5,6 +5,7 @@ mod solver;
 
 use crate::decoder::decoder::decode;
 use crate::preprocesser::preprocesser::preprocess;
+use crate::preprocesser::preprocesser::generate_possible_substrings;
 //use crate::solver::solver::solve;
 use crate::solver::solver::solve_2;
 
@@ -20,7 +21,8 @@ fn main() {
     match instance {
         Some(p) => {
             let preprocessed = preprocess(&p);
-            let result = solve_2(&preprocessed);
+            let possible_substrings = generate_possible_substrings(&p);
+            let result = solve_2(&preprocessed, &possible_substrings);
             if result == "NO".to_string() {
                 println!("NO")
             }
