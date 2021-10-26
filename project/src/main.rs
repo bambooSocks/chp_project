@@ -17,12 +17,17 @@ pub struct ProblemInstance {
 
 fn main() {
     let instance = decode();
-    let preprocessed = preprocess(&instance);
-    let result = solve_2(&preprocessed);
-    if result == "NO".to_string() {
-        println!("NO")
-    }
-    else {
-        println!("{}", result)
+    match instance {
+        Some(p) => {
+            let preprocessed = preprocess(&p);
+            let result = solve_2(&preprocessed);
+            if result == "NO".to_string() {
+                println!("NO")
+            }
+            else {
+                println!("{}", result)
+            }
+        },
+        None => println!("NO")
     }
 }
