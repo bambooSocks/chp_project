@@ -34,7 +34,9 @@ pub mod decoder {
                     key = c;
                 } else {
                     if c == ',' {
-                        value.push(single_value);
+                        if !value.contains(&single_value) {
+                            value.push(single_value);
+                        }
                         single_value = String::new();
                         continue;
                     } else {
@@ -42,7 +44,9 @@ pub mod decoder {
                     }
                 }
             }
-            value.push(single_value);
+            if !value.contains(&single_value) {
+                value.push(single_value);
+            }
             expansion.insert(key, value);
         }
         ProblemInstance {
