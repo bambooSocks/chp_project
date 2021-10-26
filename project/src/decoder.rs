@@ -13,7 +13,10 @@ pub mod decoder {
         let s: String = iterator.next().unwrap().unwrap().trim().to_string();
         let mut t: Vec<String> = Vec::new();
         for _ in 0..k {
-            t.push(iterator.next().unwrap().unwrap().trim().to_string());
+            let t_i = iterator.next().unwrap().unwrap().trim().to_string();
+            if !t.contains(&t_i) {
+                t.push(t_i);
+            }
         }
         let mut expansion: HashMap<char, Vec<String>> = HashMap::new();
         while iterator.peek().is_some() {
