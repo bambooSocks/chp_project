@@ -5,8 +5,7 @@ mod solver;
 
 use crate::decoder::decoder::decode;
 use crate::preprocesser::preprocesser::preprocess;
-//use crate::solver::solver::solve;
-use crate::solver::solver::solve_2;
+use crate::solver::solver::solve;
 
 #[derive(Debug)]
 pub struct ProblemInstance {
@@ -20,7 +19,7 @@ fn main() {
     match instance {
         Some(p) => {
             let preprocessed = preprocess(&p);
-            let result = solve_2(&preprocessed);
+            let result = solve(&preprocessed);
             if result == "NO".to_string() {
                 println!("NO")
             }
